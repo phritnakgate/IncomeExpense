@@ -1,17 +1,29 @@
 import './App.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
     const [datetime, setDatetime] = useState('')
     const [description, setDescription] = useState('')
+    const [transactions, setTransactions] = useState('')
+
+    async function getTransactions(){
+        const url = process.env.REACT_APP_API_URL+'transactions'
+        const response = await fetch(url)
+        return await response.json()
+    }
+    useEffect(() => {
+        getTransactions().then(transactions => {
+            setTransactions(transactions)
+        })
+    }, []);
 
     const sel_refcode = [
         {value:'', text:''},
         {value:'inc', text:'inc'},
-        {value:'ex1', text:'exp-001'},
-        {value:'ex2', text:'exp-002'},
-        {value:'ex3', text:'exp-003'},
-        {value:'ex4', text:'exp-004'}
+        {value:'exp-001', text:'exp-001'},
+        {value:'exp-002', text:'exp-002'},
+        {value:'exp-003', text:'exp-003'},
+        {value:'exp-004', text:'exp-004'}
     ]
     const [refcode, setRefcode] = useState('')
     const select_refcode = event =>{
@@ -36,10 +48,21 @@ function App() {
         })
     }
 
+    let balance = 0
+    for(const transaction of transactions){
+        if(transaction.refcode === "inc"){
+            balance += transaction.money
+        }else{
+            balance -= transaction.money
+        }
+    }
+
+    balance = balance.toFixed(2)
+
   return (
     <main>
       <h1>Money Management</h1>
-        <h1>฿400<span>.00</span></h1>
+        <h1>฿{balance}</h1>
         <form onSubmit={addNewTransaction}>
             <div className="datetime_form">
                 <input type="datetime-local"
@@ -65,26 +88,19 @@ function App() {
             <button type="submit">Add New Transaction</button>
         </form>
         <div className="transactions">
-            <div className="transaction">
-                <div className="left">
-                    <div className="desc">Description</div>
-                    <div className="refcode">Refcode</div>
+            {transactions.length > 0 && transactions.map(transaction => (
+                <div className="transaction">
+                    <div className="left">
+                        <div className="desc">{transaction.description}</div>
+                        <div className="refcode">{transaction.refcode}</div>
+                    </div>
+                    <div className="right">
+                        <div className={"spend "+(transaction.refcode === "inc"?'green':'red')}>{(transaction.refcode === "inc"?'+':'-')+transaction.money}</div>
+                        <div className="datetime_trans">{transaction.datetime}</div>
+                    </div>
                 </div>
-                <div className="right">
-                    <div className="spend green">+฿100</div>
-                    <div className="datetime_trans">2023-07-27</div>
-                </div>
-            </div>
-            <div className="transaction">
-                <div className="left">
-                    <div className="desc">Description</div>
-                    <div className="refcode">Refcode</div>
-                </div>
-                <div className="right">
-                    <div className="spend red">-฿100</div>
-                    <div className="datetime_trans">2023-07-27</div>
-                </div>
-            </div>
+            ))}
+
         </div>
     </main>
   );

@@ -19,6 +19,12 @@ app.post('/api/addtransaction', async (req, res) => {
     res.json(transaction)
 })
 
+app.get('/api/transactions', async(req, res) => {
+    await mongoose.connect(process.env.DATABASE)
+    const transactions = await Transaction.find()
+    res.json(transactions)
+})
+
 const port = process.env.PORT
 app.listen(port, ()=> console.log(`Start server in port ${port}`))
 
