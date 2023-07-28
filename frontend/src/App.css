@@ -82,11 +82,11 @@ div.transaction:first-child{
   border-top: 0;
 }
 div.transaction div.refcode{
-  font-size: 1rem;
-}
-div.transaction div.desc{
   font-size: 0.7rem;
   color: #888;
+}
+div.transaction div.desc{
+  font-size: 1rem;
 }
 div.right{
   text-align: right;
