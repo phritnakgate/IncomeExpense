@@ -1,5 +1,5 @@
 # Income-Expense
-A money manager using MERN Stack.
+A simple money manager using MERN Stack.
 
 [Reference](https://www.youtube.com/watch?v=aD1c_YmHsFg&ab_channel=CodingWithDawid)
 
